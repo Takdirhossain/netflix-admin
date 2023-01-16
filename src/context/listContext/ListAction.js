@@ -14,22 +14,22 @@ export const getListFail = () => {
         type: "GET_LISTS_FAILL"
     }
 }
-// export const createMovieStart = () => {
-//     return{
-//         type: "CREATE_MOVIE_START"
-//     }
-// }
-// export const createMovieSuccess = (movie) => {
-//     return{
-//         type: "CREATE_MOVIE_SUCCESS",
-//         payload: movie
-//     }
-// }
-// export const createMovieFail = () => {
-//     return{
-//         type: "CREATE_MOVIE_FAILL"
-//     }
-// }
+export const createListStart = () => {
+    return{
+        type: "CREATE_LISTS_START"
+    }
+}
+export const createListSuccess = (movie) => {
+    return{
+        type: "CREATE_LISTS_SUCCESS",
+        payload: movie
+    }
+}
+export const createListFail = () => {
+    return{
+        type: "CREATE_LISTS_FAILL"
+    }
+}
 export const deleteListsStart = () => {
     return{
         type: "DELETE_LISTS_START"

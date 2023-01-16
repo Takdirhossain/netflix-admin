@@ -6,6 +6,7 @@ import { useContext } from "react";
 import { MovieContext } from "../../context/movieContext/MovieContext";
 import { ListContext } from "../../context/listContext/ListContext";
 import { useEffect } from "react";
+import { createList } from "../../context/listContext/ListApiCall";
 
 export default function NewList() {
   const [list, setList] = useState(null);
@@ -16,16 +17,23 @@ export default function NewList() {
     const value = e.target.value;
     setList({ ...list, [e.target.name]: value });
   };
-  
-  useEffect(() => {
-getMovie(dispatchMovie)
-  }, [dispatchMovie])
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   createMovie(movie, dispatch);
-  // };
-  
+  useEffect(() => {
+    getMovie(dispatchMovie);
+  }, [dispatchMovie]);
+
+  const handleSelect = (e) => {
+    const value = Array.from(
+      e.target.selectedOptions,
+      (option) => option.value
+    );
+    setList({ ...list, [e.target.name]: value });
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    createList(list, dispatch);
+  };
+  console.log(list);
   return (
     <div className="newProduct">
       <h1 className="addProductTitle">New List</h1>
@@ -64,11 +72,10 @@ getMovie(dispatchMovie)
             <select
               multiple
               name="content"
-              
+              onChange={handleSelect}
               style={{ height: "280px" }}
             >
               {movies?.map((movie) => (
-               
                 <option key={movie._id} value={movie._id}>
                   {movie.title}
                 </option>
@@ -76,7 +83,7 @@ getMovie(dispatchMovie)
             </select>
           </div>
         </div>
-        <button className="addProductButton" >
+        <button className="addProductButton" onClick={handleSubmit}>
           Create
         </button>
       </form>
