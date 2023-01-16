@@ -2,8 +2,10 @@ import { useState } from "react";
 import storage from "../../firebase/firebase.config";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
-
 import "./newProduct.css";
+import { createMovie } from "../../context/movieContext/movieApiCall";
+import { useContext } from "react";
+import { MovieContext } from "../../context/movieContext/MovieContext";
 
 export default function NewProduct() {
   const [movie, setMovie] = useState(null);
@@ -13,46 +15,39 @@ export default function NewProduct() {
   const [trailer, setTrailer] = useState(null);
   const [video, setVideo] = useState(null);
   const [uploaded, setUploaded] = useState(0);
+  const { dispatch } = useContext(MovieContext);
+
   const handleChange = (e) => {
     const value = e.target.value;
     setMovie({ ...movie, [e.target.name]: value });
   };
   const upload = (iteams) => {
-    iteams.forEach((iteam) => {
-      const fileName = new Date().getTime() + iteam.label + iteam.file.name;
-      const fileref = ref(storage, `/iteams/${fileName}`)
-      const uploadTask = uploadBytesResumable(fileref, fileName)
-      uploadTask.on('state_changed', 
-      (snapshot) => {
-        // Observe state change events such as progress, pause, and resume
-        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log('Upload is ' + progress + '% done');
-        switch (snapshot.state) {
-          case 'paused':
-            console.log('Upload is paused');
-            break;
-          case 'running':
-            console.log('Upload is running');
-            break;
-            default :
-            console.log("uploadingf")
+    console.log(iteams)
+    iteams?.forEach((iteam) => {
+     
+      const fileName = new Date().getTime() + iteam?.file?.name;
+      const fileref = ref( storage, `/items/${fileName}`)
+      const uploadTask = uploadBytesResumable(fileref, iteam.file);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("upload is" + progress + "%");
+        },
+        (error) => {},
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            setMovie((prev) => {
+              return { ...prev, [iteam.label]: downloadURL };
+            });
+            setUploaded((prev) => prev + 1);
+          });
         }
-      }, 
-      (error) => {
-        // Handle unsuccessful uploads
-      }, 
-      () => {
-        // Handle successful uploads on complete
-        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          console.log('File available at', downloadURL);
-        });
-      }
-    );
-    
-  });
-};
+      );
+    });
+  };
+
   const handleUpload = (e) => {
     e.preventDefault();
     upload([
@@ -63,6 +58,12 @@ export default function NewProduct() {
       { file: video, label: "video" },
     ]);
   };
+
+  const handaleCreate = (e) => {
+    e.preventDefault();
+    createMovie(movie, dispatch);
+  };
+  console.log(movie);
   return (
     <div className="newProduct">
       <h1 className="addProductTitle">New Movie</h1>
@@ -72,7 +73,7 @@ export default function NewProduct() {
           <input
             type="file"
             id="img"
-            name="img"
+            name="img"  
             onChange={(e) => setImg(e.target.files[0])}
           />
         </div>
@@ -172,7 +173,9 @@ export default function NewProduct() {
           />
         </div>
         {uploaded === 5 ? (
-          <button className="addProductButton">Create</button>
+          <button className="addProductButton" onClick={handaleCreate}>
+            Create
+          </button>
         ) : (
           <button className="addProductButton" onClick={handleUpload}>
             Upload

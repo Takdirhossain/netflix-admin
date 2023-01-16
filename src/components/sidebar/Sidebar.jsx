@@ -5,7 +5,7 @@ import {
   TrendingUp,
   PermIdentity,
   Storefront,
-  AttachMoney,
+  List,
   BarChart,
   MailOutline,
   DynamicFeed,
@@ -14,6 +14,7 @@ import {
   Report,
 } from "@material-ui/icons";
 import { Link } from "react-router-dom";
+
 
 export default function Sidebar() {
   return (
@@ -53,10 +54,12 @@ export default function Sidebar() {
                 Movies
               </li>
             </Link>
+            <Link to="/list" className="link">
             <li className="sidebarListItem">
-              <AttachMoney className="sidebarIcon" />
-              Transactions
+              <List className="sidebarIcon" />
+              List
             </li>
+            </Link>
             <li className="sidebarListItem">
               <BarChart className="sidebarIcon" />
               Reports
