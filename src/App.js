@@ -25,7 +25,7 @@ function App() {
         <Route path="/login">
            {user? <Redirect to="/"/> :  <Login />}
           </Route>
-          {user && 
+         
       <div className="container">
         <Sidebar />
           <Route exact path="/">
@@ -56,8 +56,8 @@ function App() {
             <NewList />
           </Route>
       </div>
-      }
         </Switch>
+      
     </Router>
   );
 }
